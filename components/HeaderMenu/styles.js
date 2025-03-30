@@ -26,11 +26,10 @@ export default css = StyleSheet.create({
     color: '#fff'
   },
   notf: {
-    position: "absolute", 
-    right: 5,            
-    top: 10,         
+    position: "absolute",        
     width: 20,            
-    height: 20,           
+    height: 20, 
+    top: 0,           
     borderRadius: 10,    
     backgroundColor: "red", 
     justifyContent: "center",

@@ -20,7 +20,7 @@ export default css = StyleSheet.create({
     elevation: 5,
   },
   input: {
-    width: '82.4%',
+    width: '70%',
     height: 40,
     borderColor: '#ccc',
     borderTopLeftRadius: 6,
@@ -42,4 +42,6 @@ export default css = StyleSheet.create({
     alignItems: "center"
 
   },
+
+
 });

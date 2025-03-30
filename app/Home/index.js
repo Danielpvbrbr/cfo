@@ -8,8 +8,8 @@ import Card from '@/components/Card';
 import Search from '@/components/Search';
 import { useAuth } from "@/context/AuthContext.js";
 
-export default function Home({ modalVisible, setModalVisible }) {
-  const { purchases, sendOverdueNotification } = useAuth();
+export default function Home() {
+  const { purchases, modalVisible, setModalVisible } = useAuth();
   const [loading, setLoading] = useState(false);
   const fadeAnim = useState(new Animated.Value(1))[0];
   const [activeTab, setActiveTab] = useState(1);
@@ -17,8 +17,13 @@ export default function Home({ modalVisible, setModalVisible }) {
   const [inDaysPurchases, setInDaysPurchases] = useState([]);
   const [paidPurchases, setPaidPurchases] = useState([]);
   const [search, setSearch] = useState("");
-  const [qtd, setQtd] = useState(0);
+  const [lengthPurchases, setLengthPurchases] = useState(0);
 
+
+  const formateDate = (data) => {
+    const [day, month, year] = data.split("/");
+    return new Date(`${year}-${month}-${day}`);
+  };
 
   const classifyPurchases = () => {
     setPaidPurchases([]);
@@ -26,49 +31,41 @@ export default function Home({ modalVisible, setModalVisible }) {
     const inDays = [];
     const paid = [];
 
-    purchases.forEach(purchase => {
+    purchases.forEach(data => {
       let isAlreadyAdded = false;
+      const installments = JSON.parse(data.installments)
+      const paid = JSON.parse(data.paid)
+      const isPaid = data.numInstallments === data.paid.length;
 
-      JSON.parse(purchase.installments).forEach(installment => {
-        const isPaid = purchase.numInstallments === purchase.paid.length;
-        const installmentDate = new Date(installment.split('/').reverse().join('-'));
-        const isOverdue = installmentDate < new Date();
-        const isInstallmentPaid = purchase.paid.includes(installment);
+      const unpaidOverdue = installments.filter(
+        (el) => !paid.includes(el) //retira as pagas
+      );
 
-        if (!isAlreadyAdded) {
-          if (isPaid) {
-            paid.push(purchase);
-          } else if (isOverdue && !isInstallmentPaid) {
-            inDays.push(purchase);
-            setQtd(inDays.length);
-          } else {
-            overdue.push(purchase);
-          }
-          isAlreadyAdded = true;
+      const delay = unpaidOverdue.filter(
+        (el) => formateDate(el) < new Date() //mostra as em atraso
+      );
+
+      const onTime = installments.filter(
+        (el) =>
+          !paid.includes(el) && (formateDate(el) < new Date()) //retira as pagas e restira as vencidas
+      );
+
+      if (!isAlreadyAdded) {
+        if (!Boolean(onTime.length)) {
+          inDays.push(data);
+        } else if (delay.length) {
+          overdue.push(data);
+        } else if (isPaid) {
+          paid.push(data);
         }
-      });
+        isAlreadyAdded = true;
+      }
     });
-    
-    setOverduePurchases(overdue);
     setInDaysPurchases(inDays);
+    setOverduePurchases(overdue);
     setPaidPurchases(paid);
   };
 
-  // Função para verificar se existem contas vencidas e enviar notificações
-  const checkAndNotifyOverduePurchases = () => {
-    overduePurchases.forEach((purchase) => {
-      JSON.parse(purchase.installments).forEach((installment) => {
-        const installmentDate = new Date(installment.split('/').reverse().join('-'));
-        const title = purchase.title;
-        const dueDate = installmentDate.toLocaleDateString();
-
-        // Verifica se a parcela está vencida e não foi paga
-        if (installmentDate < new Date() && !purchase.paid.includes(installment)) {
-          sendOverdueNotification(title, dueDate); // Passa título e data de vencimento
-        }
-      });
-    });
-  };
 
   useEffect(() => {
     setLoading(true);
@@ -88,7 +85,6 @@ export default function Home({ modalVisible, setModalVisible }) {
     });
 
     classifyPurchases(); // Classificar as compras
-    checkAndNotifyOverduePurchases(); // Verificar e enviar notificação para as compras vencidas
   }, [purchases]);
 
   // Filtra compras de acordo com o nome digitado
@@ -101,9 +97,9 @@ export default function Home({ modalVisible, setModalVisible }) {
   // Retorna compras filtradas de acordo com a aba ativa
   const renderPurchases = () => {
     if (activeTab === 1) {
-      return filterPurchases(overduePurchases);
-    } else if (activeTab === 2) {
       return filterPurchases(inDaysPurchases);
+    } else if (activeTab === 2) {
+      return filterPurchases(overduePurchases);
     } else if (activeTab === 3) {
       return filterPurchases(paidPurchases);
     }
@@ -112,14 +108,24 @@ export default function Home({ modalVisible, setModalVisible }) {
 
   const filteredPurchases = renderPurchases();
 
+  useEffect(() => {
+    setLengthPurchases(overduePurchases.length);
+  }, [inDaysPurchases]);
+
   return (
     <View style={css.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#7EB3FA" />
-      <HeaderMenu active={activeTab} setActive={setActiveTab} qtd={qtd} />
+      <HeaderMenu
+        active={activeTab}
+        setActive={setActiveTab}
+        lengthPurchases={[inDaysPurchases.length, overduePurchases.length, paidPurchases.length]}
+      />
 
-      {/* Campo de busca */}
-      <Search search={search} setSearch={setSearch} />
-      {/* <Button title="Testar Notificação" onPress={sendOverdueNotification} /> */}
+      <Search
+        search={search}
+        setSearch={setSearch}
+      />
+
       {loading ? (
         <View style={css.loadingContainer}>
           <LottieView
@@ -143,7 +149,7 @@ export default function Home({ modalVisible, setModalVisible }) {
                   source={require('@/assets/notfoud.json')}
                   autoPlay
                   loop
-                  style={styles.notFoundAnimation} 
+                  style={styles.notFoundAnimation}
                 />
                 <Text style={{
                   fontSize: 20,

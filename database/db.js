@@ -1,3 +1,4 @@
+import socket from '@/services/socket';
 import * as SQLite from 'expo-sqlite';
 
 // Abrir o banco de dados
@@ -50,15 +51,15 @@ export const addPurchase = async (purchaseName, purchaseValue, numInstallments, 
   }
 };
 
-
 // Função para obter todas as compras
 export const getAllPurchases = async () => {
   try {
     const purchases = await db.getAllAsync('SELECT * FROM purchases');
+
     const data = purchases.map(data => ({
       id: data.id,
       numInstallments: data.numInstallments,
-      paid: JSON.parse(data.paid),
+      paid: data.paid,
       payday: data.payday,
       purchaseDate: data.purchaseDate,
       title: data.title,
@@ -121,4 +122,5 @@ export const clearDatabase = async () => {
     console.error('Erro ao limpar o banco de dados:', error);
   }
 };
+// clearDatabase()
 

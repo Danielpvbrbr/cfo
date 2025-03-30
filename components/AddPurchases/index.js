@@ -125,7 +125,7 @@ export default function AddPurchases({ modalVisible, setModalVisible }) {
             style={css.select}
             onValueChange={(itemValue) => setDueDay(itemValue)}
           >
-            {Array.from({ length: 28 }, (_, index) => (
+            {Array.from({ length: 31 }, (_, index) => (
               <Picker.Item key={index} label={`Todo dia ${index + 1}`} value={`${index + 1}`} />
             ))}
           </Picker>

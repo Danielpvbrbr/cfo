@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { Text, TouchableOpacity, TouchableHighlight, View, ActivityIndicator, Alert } from 'react-native';
+import { Text, TouchableOpacity, TouchableHighlight, View, ActivityIndicator, Alert, Pressable } from 'react-native';
 import css from './styles'
 import { formatNumber } from "../funcLocation";
 import { useAuth } from "@/context/AuthContext.js";
 
 // Componente Card que representa uma compra parcelada
 const Card = ({ dataValue, loading }) => {
-  const { deletePurchase, updatePaidStatus,loadPurchasesData } = useAuth();
+  const { deletePurchase, updatePaidStatus, loadPurchasesData } = useAuth();
   const [press, setPress] = useState(false);
 
   const data = dataValue;
@@ -37,14 +37,14 @@ const Card = ({ dataValue, loading }) => {
     const installmentDate = new Date(v.split('/').reverse().join('-'));
 
     // Verifica se a data da parcela é anterior à data atual e se não foi paga
-    const isOverdue = installmentDate < new Date() && !data.paid.includes(v);
+    const isOverdue = installmentDate < new Date() && !JSON.parse(data.paid).includes(v);
 
     return isOverdue; // Retorna true se encontrar uma parcela vencida
   });
 
   // Função para atualizar o status de pagamento de uma parcela
   const updatePaid = (id, date) => {
-    let datesArray = [...data.paid];  // Mantém a imutabilidade do estado
+    let datesArray = [...JSON.parse(data.paid)];  // Mantém a imutabilidade do estado
     datesArray.push(date);
     let updatedDate = JSON.stringify(datesArray);
     updatePaidStatus(id, updatedDate);
@@ -69,10 +69,10 @@ const Card = ({ dataValue, loading }) => {
 
       {/* Informações da compra */}
       <View style={css.line}><Text style={css.title}>Parcelas:</Text><Text style={css.subtitle}>{data.numInstallments}</Text></View>
-      <View style={css.line}><Text style={css.title}>Parc pagas:</Text><Text style={css.subtitle}>{data.paid.length}</Text></View>
-      <View style={css.line}><Text style={css.title}>Parc Restante:</Text><Text style={css.subtitle}>{data.numInstallments - data.paid.length}</Text></View>
+      <View style={css.line}><Text style={css.title}>Parc pagas:</Text><Text style={css.subtitle}>{JSON.parse(data.paid).length}</Text></View>
+      <View style={css.line}><Text style={css.title}>Parc Restante:</Text><Text style={css.subtitle}>{data.numInstallments - JSON.parse(data.paid).length}</Text></View>
       <View style={css.line}><Text style={css.title}>Valor da compra:</Text><Text style={css.subtitle}>{data.value}</Text></View>
-      <View style={css.line}><Text style={css.title}>Total Restante:</Text><Text style={css.subtitle}>{data.value - (data.numInstallments * data.paid.length)}</Text></View>
+      <View style={css.line}><Text style={css.title}>Total Restante:</Text><Text style={css.subtitle}>{data.value - (data.numInstallments * JSON.parse(data.paid).length)}</Text></View>
       <View style={css.line}><Text style={css.title}>Data de Compra:</Text><Text style={css.subtitle}>{data.purchaseDate}</Text></View>
 
       {/* Exibe se há parcelas vencidas */}
@@ -90,13 +90,14 @@ const Card = ({ dataValue, loading }) => {
             {
               JSON.parse(data.installments).map((dateArray, i) => {
                 // Verifica se o item foi pago
-                const isPaid = data.paid.includes(dateArray);
+                const isPaid = JSON.parse(data.paid).includes(dateArray);
 
                 // Verifica se a data da parcela está vencida
                 const isOverdue = new Date(dateArray.split('/').reverse().join('-')) < new Date();
 
                 return (
-                  <View
+                  <Pressable
+                    onPress={() => alert("Pago dia 08/92/2998")}
                     style={[
                       css.installments,
                       {
@@ -132,7 +133,7 @@ const Card = ({ dataValue, loading }) => {
                     >
                       <Text style={css.btntext}>{isPaid ? "Pago" : "Pagar"}</Text>
                     </TouchableOpacity>
-                  </View>
+                  </Pressable>
                 );
               })
             }

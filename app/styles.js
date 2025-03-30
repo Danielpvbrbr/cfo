@@ -34,21 +34,4 @@ export default css = StyleSheet.create({
     fontWeight: "900",
     color: '#fff',
   },
-  addButton: {
-    position: 'absolute',
-    bottom: 19, 
-    right: 25, 
-    width: 50, 
-    height: 50, 
-    borderRadius: 10, 
-    backgroundColor: '#1B61BC', 
-    justifyContent: 'center',
-    alignItems: 'center', 
-    elevation: 5, 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.2, 
-    shadowRadius: 3.5,
-  }
-  
 });

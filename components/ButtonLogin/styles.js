@@ -2,20 +2,30 @@ import { StyleSheet } from 'react-native';
 
 export default css = StyleSheet.create({
   button: {
-    width: '90%',
-    height: 60,
+    width: '80%',
+    height: 50,
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection:"row",
+    backgroundColor:"#F8F8F8",
+    justifyContent: "center",
     alignItems: 'center',
     borderRadius: 5,
-    color: '#fff',
     fontWeight: 'bold',
-    marginTop:7,
-    marginBottom:7,
+    marginTop: 7,
+    marginBottom: 7,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
-  text: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold'
+  btnText: {
+    color: '#ffff',
+    fontSize: 17,
+    fontWeight: 'bold',
+    // borderWidth: 1,
   }
 });

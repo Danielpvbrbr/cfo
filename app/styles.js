@@ -14,24 +14,5 @@ export default css = StyleSheet.create({
     backgroundColor: '#7EB3FA',
     // borderWidth: 1,
   },
-  back: {
-    width: 56,
-    height:50,
-    // borderWidth: 1,
-    display: 'flex',
-    flexDirection: "row",
-    justifyContent: 'center',
-    alignItems: 'center',
 
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#fff'
-  },
-  logo: {
-    fontSize: 60,
-    fontWeight: "900",
-    color: '#fff',
-  },
 });

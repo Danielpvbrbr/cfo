@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Parcelô",
-    "slug": "Parcelô",
+    "slug": "Parcelo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -59,7 +59,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "412bc79e-9e67-4f8d-a3a3-be89ca28be6b"
+        "projectId": "8d8eab67-bc5c-4c72-85a3-cefa9dc5eadf"
       }
     }
   }

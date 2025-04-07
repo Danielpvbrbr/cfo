@@ -2,14 +2,10 @@ import { useState } from 'react'
 import { View, Text, Image, Pressable } from 'react-native';
 import css from './styles'
 import ButtonLogin from '@/components/ButtonLogin'
+import { useGoogleAuth } from './useGoogleAuth'; 
 
 export default function SignIn() {
-  const onSubmit = () => {
-    const data = {
-      email: email,
-      password: password
-    }
-  }
+  const { promptAsync, request } = useGoogleAuth();
 
   return (
     <View style={css.container}>
@@ -21,7 +17,7 @@ export default function SignIn() {
       </View>
 
       <View style={css.area}>
-        <Pressable style={css.button} onPress={() => alert("")}>
+        <Pressable style={css.button} onPress={() => promptAsync()} disabled={!request}>
           <Image
             style={{ width: 40, height: 40 ,marginLeft: 6 }}
             source={require('../../../assets/images/Google.png')}

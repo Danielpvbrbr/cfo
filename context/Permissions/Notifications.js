@@ -37,7 +37,7 @@ export const getPermissionsAsync = async () => {
             AsyncStorage.getItem("deviceUUID"),
             Notifications.getExpoPushTokenAsync(),
         ]);
-
+console.log(uniqueId)
         let uniqueId = storedId;
         const token = pushToken.data;
 
